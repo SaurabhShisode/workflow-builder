@@ -11,7 +11,7 @@ interface Props {
   deleteNode: (nodeId: string, parentId: string) => void
   updateLabel: (nodeId: string, label: string) => void
   reportGeometry: (nodeId: string, geometry: { id: string; x: number; y: number; width: number; height: number } | null) => void
-  canvasRef: React.RefObject<HTMLDivElement>
+  canvasRef: React.RefObject<HTMLDivElement | null>
 }
 
 const NODE_TYPE_COLORS: Record<string, { bg: string; border: string; text: string }> = {
@@ -93,12 +93,6 @@ export default function NodeCard({
     setShowMenu(true)
   }
 
-  function handleAddToBranch(branchIndex: 0 | 1, e: React.MouseEvent) {
-    e.stopPropagation()
-    setMenuBranchIndex(branchIndex)
-    setShowMenu(true)
-  }
-
   return (
     <div
       ref={nodeRef}
@@ -155,7 +149,6 @@ export default function NodeCard({
             </div>
             {showMenu && menuBranchIndex === undefined && node.children[0] && (
               <NodeMenu
-                nodeId={node.id}
                 parentId={parentId}
                 onAddNode={(type) => {
                   addNode(node.id, type)
@@ -223,7 +216,6 @@ export default function NodeCard({
           </button>
           {showMenu && menuBranchIndex === undefined && (
             <NodeMenu
-              nodeId={node.id}
               parentId={parentId}
               onAddNode={(type) => {
                 addNode(node.id, type)

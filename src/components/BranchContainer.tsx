@@ -69,7 +69,6 @@ export default function BranchContainer({
             </button>
             {showMenu && menuBranchIndex === 0 && (
               <NodeMenu
-                nodeId={nodeId}
                 parentId={parentId}
                 onAddNode={(type) => {
                   addNode(nodeId, type, 0)
@@ -122,7 +121,6 @@ export default function BranchContainer({
             </button>
             {showMenu && menuBranchIndex === 1 && (
               <NodeMenu
-                nodeId={nodeId}
                 parentId={parentId}
                 onAddNode={(type) => {
                   addNode(nodeId, type, 1)

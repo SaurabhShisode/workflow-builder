@@ -2,7 +2,6 @@ import { useState, useRef, useEffect } from "react"
 import type { NodeType } from "../types/workflow"
 
 interface Props {
-  nodeId: string
   parentId: string | null
   onAddNode: (type: NodeType) => void
   onDelete: () => void
@@ -11,7 +10,6 @@ interface Props {
 }
 
 export default function NodeMenu({
-  nodeId,
   parentId,
   onAddNode,
   onDelete,
