@@ -11,7 +11,7 @@ interface Props {
   deleteNode: (nodeId: string, parentId: string) => void
   updateLabel: (nodeId: string, label: string) => void
   reportGeometry: (nodeId: string, geometry: { id: string; x: number; y: number; width: number; height: number } | null) => void
-  canvasRef: React.RefObject<HTMLDivElement>
+  canvasRef: React.RefObject<HTMLDivElement | null>
 }
 
 export default function BranchContainer({
