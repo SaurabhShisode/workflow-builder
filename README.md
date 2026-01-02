@@ -1,73 +1,147 @@
-# React + TypeScript + Vite
+# Workflow Builder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A professional, interactive workflow builder application built with React and TypeScript. Create, edit, and manage complex workflow structures with an intuitive visual interface.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Core Functionality
 
-## React Compiler
+- **Visual Workflow Canvas**: Build workflows with a clean, intuitive interface
+- **Node Types**:
+  - **Start**: The root node of every workflow
+  - **Action**: Single-step tasks that execute sequentially
+  - **Branch (Condition)**: Decision points with True/False branches
+  - **End**: Terminal nodes that mark workflow completion
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Node Management**:
+  - Add new nodes after any non-End node
+  - Delete nodes (except the Start node)
+  - Edit node labels by clicking on them
+  - Automatic connection preservation when deleting nodes
 
-## Expanding the ESLint configuration
+- **Visual Connections**: 
+  - Clear visual representation of workflow flow
+  - Right-angle connections for branch nodes
+  - Gradient-styled connection lines
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Bonus Features
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Undo/Redo**: Full history management with keyboard shortcuts
+  - `Ctrl+Z` / `Cmd+Z`: Undo
+  - `Ctrl+Y` / `Cmd+Y` or `Ctrl+Shift+Z`: Redo
+- **Context-Sensitive Menus**: Click on connection points to see a clean menu for adding nodes
+- **Save Workflow**: Export workflow structure as JSON (logs to console)
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Technology Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **React 19** with functional components and Hooks
+- **TypeScript** for type safety
+- **Vite** for fast development and building
+- **Tailwind CSS** for styling (no UI libraries)
+- **CSS Transitions** for smooth animations
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or higher)
+- npm or yarn
+
+### Installation
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview production build
+npm preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Usage
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. **Adding Nodes**: 
+   - Click the connection point (circular button) below any node
+   - Or click the "+ Add next step" button
+   - Select the node type from the context menu
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. **Adding to Branches**:
+   - For Condition nodes, click "+ Add step to True" or "+ Add step to False"
+   - Select the node type from the menu
+
+3. **Editing Labels**: 
+   - Click on any node's label to edit it
+   - Press Enter or click outside to save
+
+4. **Deleting Nodes**: 
+   - Click the × button in the top-right corner of any node
+   - The node's children will automatically connect to its parent
+
+5. **Undo/Redo**: 
+   - Use the buttons in the header
+   - Or use keyboard shortcuts: `Ctrl+Z` / `Ctrl+Y`
+
+6. **Saving**: 
+   - Click "Save Workflow" to export the current workflow structure
+   - The JSON will be logged to the browser console
+
+## Project Structure
+
 ```
+src/
+├── components/
+│   ├── Canvas.tsx          # Main canvas container
+│   ├── NodeCard.tsx        # Individual node component with menu
+│   ├── RightAngleBranchArrows.tsx  # Branch connection arrows
+│   └── ...
+├── types/
+│   └── workflow.ts         # TypeScript type definitions
+├── utils/
+│   ├── helpers.ts          # Utility functions
+│   └── layout.ts           # Layout calculation helpers
+├── App.tsx                 # Main application component
+└── main.tsx               # Application entry point
+```
+
+## Data Structure
+
+The workflow is represented as a graph structure:
+
+```typescript
+interface Workflow {
+  rootId: string
+  nodes: Record<string, WorkflowNode>
+}
+
+interface WorkflowNode {
+  id: string
+  type: "start" | "action" | "branch" | "end"
+  label: string
+  children: (string | null)[]  // For branch: [leftChild, rightChild]
+                              // For others: [singleChild]
+}
+```
+
+## Key Implementation Details
+
+- **State Management**: React useState with history tracking for undo/redo
+- **Node Insertion**: Automatically inserts nodes between parent and existing children
+- **Node Deletion**: Preserves workflow continuity by connecting deleted node's children to parent
+- **Layout**: Vertical tree layout with horizontal branching for conditions
+- **Styling**: Custom Tailwind classes with gradient effects and smooth transitions
+
+## Browser Support
+
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## License
+
+This project is created as a take-home assignment.
